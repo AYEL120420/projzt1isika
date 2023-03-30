@@ -40,16 +40,7 @@ public class GestionAnnuaire {
 	
 	public void afficherAnnuaireOrdreAlphab() {
 		
-		Annuaire annuaire = new Annuaire();
-		
-		
-		//this.stagiaire
-		//parcours infix 
-		
-		List<Stagiaire> stagiaires = new LinkedList();
-		
-		int comparaision;
-		
+
 		
 		
 	}

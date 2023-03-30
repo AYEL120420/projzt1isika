@@ -44,7 +44,7 @@ public class Noeud {
 
 	public void affichageInfixeNoeud() {
 		if (this.noeudGauche != null) { //si le noeud gauche n'est pas vide 
-			this.noeudDroit.affichageInfixeNoeud(); 
+			this.noeudGauche.affichageInfixeNoeud(); 
 		}
 		System.out.println(this.stagiaire);
 		if (this.noeudDroit != null) {

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 
 public class Annuaire {
-	public ArrayList<Stagiaire>stagiaire;
 
 //lecture du fichier text contenant la liste des stagiaires 
 //on cree une liste chainée des stagiaires
@@ -16,11 +15,11 @@ public class Annuaire {
 
 	public void creerFichierTxt() {
 
-		File annuaire = new File("src/main/java/annuaire");
+		File annuaire = new File("src/main/java/annuaireTxt");
 
 		annuaire.mkdir();
 
-		File annuaireTxt = new File("src/main/java/annuaire/Annuaire.txt");
+		File annuaireTxt = new File("src/main/java/annuaireTxt/Annuaire.txt");
 		try {
 			annuaireTxt.createNewFile();
 		} catch (IOException e) {
@@ -34,7 +33,7 @@ public class Annuaire {
 		ArrayList<Stagiaire> stagiaires = new ArrayList<>();
 		
 		try {
-			FileReader fr = new FileReader("src/main/java/annuaire/annuaire.txt");
+			FileReader fr = new FileReader("src/main/java/annuaireTxt/annuaire.txt");
 
 			BufferedReader br = new BufferedReader(fr);
 			String line;
