@@ -1,4 +1,7 @@
 package fr.isika.cda24.projet1.lanceur;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +27,23 @@ public class Lanceur {
 		} 
 		abr.affichageInfixe();
 		
+		try {
+			RandomAccessFile raf = new RandomAccessFile("src/main/java/annuaireTxt/fBinaireStagiaire.bin" , "rw");
+			
+			for(Stagiaire s : stagiaires) {
+				raf.writeChars(s.getNomLong());
+				raf.writeChars(s.getPrenomLong());
+				raf.writeChars(s.getCycleLong());
+				raf.writeChars(s.getDepartementLong());
+				raf.writeChars(s.getAnneeLong());
+				
+			
+				
+			}
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
 		
 	}
-
 }
