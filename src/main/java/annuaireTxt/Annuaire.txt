@@ -1805,7 +1805,7 @@ ATOD 5
 2009
 *
 BIGOT
-Yan
+Yann
 75
 AI 72
 2008
@@ -3052,7 +3052,7 @@ Sarumathi
 ATOD 1
 2012
 *
-de L'ESCALOPIER
+De L'ESCALOPIER
 Agnès
 45
 AI 61

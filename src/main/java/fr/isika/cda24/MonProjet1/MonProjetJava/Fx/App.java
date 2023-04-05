@@ -1,43 +1,71 @@
 package fr.isika.cda24.MonProjet1.MonProjetJava.Fx;
+
 import java.util.ArrayList;
 
 import fr.isika.cda24.MonProjet1.MonProjet1.Stagiaire;
 import javafx.application.Application;
-import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 
+/**
+ * JavaFX App
+ */
 public class App extends Application {
-	//public premierSceneBorderPane  scene1;
-	//public ArrayList<Stagiaire> stagiaires;
+	
 
-	private Scene scene1 = null;
-	private Scene scene2 = null;
+	private Scene scene1 ;
+	private Scene scene2;
+	private Scene scene3;
+	private Scene scene4 = null;
+	private Scene scene5;
 	private Stage monStage;
 	
+	public ArrayList<Stagiaire> stagiaires;
+	
+	
     @Override
-    public void start(Stage stage) {
+	public void init() {
+		
+		stagiaires = new ArrayList<Stagiaire>();
+	}
+
+	@Override
+    public void start(Stage monStage) {
     	
     	premierSceneBorderPane root1 = new premierSceneBorderPane();
-    	scene1 = new Scene(root1,600,400);
+    	scene1 = new Scene(root1,1000,800);
     	
-    	deuxiemeScene root2 = new deuxiemeScene(scene1, stage);
-    	scene2 = new Scene(root2, 600,400);
-    	root1.monStage= stage;
+    	deuxiemeScene root2 = new deuxiemeScene(scene1, monStage);
+    	scene2 = new Scene(root2, 1000,800);
+    	root1.monStage= monStage;
     	root1.scene2 = scene2;
     	
-        stage.setTitle("Gestionnaire des stagiaires");
-		stage.setScene(scene1);
+    	troisiemeSceneTable root3 = new troisiemeSceneTable(stagiaires, monStage, scene1, scene2);
+    	scene3 = new Scene(root3, 1000,800);
+    	root2.monStage= monStage;
+    	root2.scene3 = scene3;
+    	
+    	documentation root4 = new documentation(scene1, monStage);
+    	scene4 = new Scene(root4, 1000,800);
+    	root1.monStage= monStage;
+    	root1.scene4 = scene4;
+    	
+    	ProfilStagiaire root5 = new ProfilStagiaire(stagiaires, monStage, scene1, scene2);
+    	scene5 = new Scene(root5, 1000,800);
+    	root3.monStage= monStage;
+    	root3.scene5 = scene5;
+    	
+        monStage.setTitle("Seek by ISIKA");
+		monStage.setScene(scene1);
 		
-        stage.show();
+        monStage.show();
+        
     }
 
     public static void main(String[] args) {
         launch();
     }
 
-	public static Object getPrimaryStage() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 }

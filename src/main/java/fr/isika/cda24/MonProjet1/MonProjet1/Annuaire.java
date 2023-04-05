@@ -59,6 +59,7 @@ public class Annuaire {
 					System.out.println("Département : " + departement);
 					System.out.println("Cycle : " + cycle);
 					System.out.println("Année : " + annee);
+					
 
 					stagiaires.add(s);
 				}
