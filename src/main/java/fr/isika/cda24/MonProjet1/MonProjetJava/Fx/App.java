@@ -1,5 +1,6 @@
 package fr.isika.cda24.MonProjet1.MonProjetJava.Fx;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import fr.isika.cda24.MonProjet1.MonProjet1.Stagiaire;
@@ -14,11 +15,10 @@ import javafx.stage.Stage;
 public class App extends Application {
 	
 
-	private Scene scene1 ;
+	private Scene scene1;
 	private Scene scene2;
 	private Scene scene3;
-	private Scene scene4 = null;
-	private Scene scene5;
+	private Scene scene4;
 	private Stage monStage;
 	
 	public ArrayList<Stagiaire> stagiaires;
@@ -31,30 +31,27 @@ public class App extends Application {
 	}
 
 	@Override
-    public void start(Stage monStage) {
+    public void start(Stage monStage) throws IOException {
     	
     	premierSceneBorderPane root1 = new premierSceneBorderPane();
-    	scene1 = new Scene(root1,1000,800);
+    	scene1 = new Scene(root1,1200,800);
     	
     	deuxiemeScene root2 = new deuxiemeScene(scene1, monStage);
-    	scene2 = new Scene(root2, 1000,800);
+    	scene2 = new Scene(root2, 1200,800);
     	root1.monStage= monStage;
     	root1.scene2 = scene2;
     	
     	troisiemeSceneTable root3 = new troisiemeSceneTable(stagiaires, monStage, scene1, scene2);
-    	scene3 = new Scene(root3, 1000,800);
+    	scene3 = new Scene(root3, 1200,800);
     	root2.monStage= monStage;
     	root2.scene3 = scene3;
+    	root1.scene3 = scene3;
     	
     	documentation root4 = new documentation(scene1, monStage);
-    	scene4 = new Scene(root4, 1000,800);
+    	scene4 = new Scene(root4, 1200,800);
     	root1.monStage= monStage;
     	root1.scene4 = scene4;
-    	
-    	ProfilStagiaire root5 = new ProfilStagiaire(stagiaires, monStage, scene1, scene2);
-    	scene5 = new Scene(root5, 1000,800);
-    	root3.monStage= monStage;
-    	root3.scene5 = scene5;
+    
     	
         monStage.setTitle("Seek by ISIKA");
 		monStage.setScene(scene1);

@@ -16,7 +16,7 @@ public class ArbreBinaireDeRecherche {
 	public ArbreBinaireDeRecherche() throws IOException {
 
 		this.racine = new Noeud(null, 1, -1, -1);
-		raf = new RandomAccessFile("src/main/java/annuaire/fBinaireStagiaire.bin", "rw");
+		raf = new RandomAccessFile("src/main/java/annuairetxt/fBinaireStagiaire.bin", "rw");
 	}
 
 	// Methode pour ecrire dans un fichier binaire a partir du fichier texte des
@@ -93,7 +93,8 @@ public class ArbreBinaireDeRecherche {
 		List<Stagiaire> stagiaires = new ArrayList<>();
 		try {
 			if (raf.length() == 0) {
-				System.out.println("arbre vide");
+				System.out.println("arbre vi/"
+						+ "de");
 			} else {
 				raf.seek(0);
 				Noeud noeudCourant = racine.lireStagiaire(raf);
@@ -121,4 +122,4 @@ public class ArbreBinaireDeRecherche {
 	
 	return resultat;
 	}}
-	
+			

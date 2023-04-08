@@ -30,14 +30,12 @@ public class Noeud {
 
 			raf.writeChars(noeud.stagiaire.getNomLong());
 			raf.writeChars(noeud.stagiaire.getPrenomLong());
-			raf.writeChars(noeud.stagiaire.getCycleLong());
 			raf.writeChars(noeud.stagiaire.getDepartementLong());
+			raf.writeChars(noeud.stagiaire.getCycleLong());
 			raf.writeChars(noeud.stagiaire.getAnneeLong());
 			raf.writeInt(noeud.indexNoeudGauche);
 			raf.writeInt(noeud.indexNoeudDroit);
 			raf.writeInt(noeud.doublon);
-
-			// raf.close();
 		}
 
 		catch (IOException e) {
@@ -51,7 +49,7 @@ public class Noeud {
 
 		int filsGauche = INDEX_FILS_NUL;
 		int filsDroit = INDEX_FILS_NUL;
-		int doublons = INDEX_FILS_NUL;
+		int doublon = INDEX_FILS_NUL;
 		Stagiaire stag = null;
 		try {
 			String nom = "";
@@ -62,13 +60,13 @@ public class Noeud {
 			for (int p = 0; p < Stagiaire.TAILLE_PRENOM_MAX; p++) {
 				prenom += raf.readChar();
 			}
-			String cycle = "";
-			for (int c = 0; c < Stagiaire.TAILLE_CYCLE_MAX; c++) {
-				cycle += raf.readChar();
-			}
 			String departement = "";
 			for (int d = 0; d < Stagiaire.TAILLE_DEPARTEMENT_MAX; d++) {
 				departement += raf.readChar();
+			}
+			String cycle = "";
+			for (int c = 0; c < Stagiaire.TAILLE_CYCLE_MAX; c++) {
+				cycle += raf.readChar();
 			}
 			String annee = "";
 			for (int a = 0; a < Stagiaire.TAILLE_ANNEE_MAX; a++) {
@@ -76,8 +74,8 @@ public class Noeud {
 			}
 			filsGauche = raf.readInt();
 			filsDroit = raf.readInt();
-			doublons = raf.readInt();
-			stag = new Stagiaire(nom, prenom, departement, cycle, annee);
+			doublon = raf.readInt();
+			stag = new Stagiaire(nom.trim(), prenom.trim(), departement.trim(), cycle.trim(), annee.trim());
 
 			// System.out.println("Stagiaire: " + stag);
 
@@ -87,7 +85,7 @@ public class Noeud {
 			e.printStackTrace();
 		}
 
-		return new Noeud(stag, filsGauche, filsDroit, doublons);
+		return new Noeud(stag, filsGauche, filsDroit, doublon);
 
 	}
 
@@ -126,8 +124,7 @@ public class Noeud {
 					nouveauNoeudGauche.ajouterNoeud(nvStagiaire, raf);
 
 				}
-			}
-			if (comparaison < 0) {
+			}else if (comparaison < 0) {
 				if (this.indexNoeudDroit == INDEX_FILS_NUL) { // cas de terminaison
 
 					// remonte de 8 octet le seek pour etre pret à ecrire à index gauche
@@ -156,28 +153,34 @@ public class Noeud {
 				}
 			} else if (comparaison == 0) {
 				// faire le doublon
-				if (this.doublon == INDEX_FILS_NUL) { // je verifie si mon noeud a dejà un doublon
-					int postionEcrireDoublon = (int) (raf.getFilePointer() - (tailleNoeud - 4));// je deplace le
-																								// pointeur à la fin de
-					// mon noeud pour ecrire le doublon
-					raf.seek(postionEcrireDoublon);
-					// je veux ajouter le doublon à mon noeud qui n aps de doublon
-					int indexDoublon = (int) (raf.length() / tailleNoeud);
+				if (this.doublon == INDEX_FILS_NUL) { // cas de terminaison
 
-					Noeud nouveauDoublon = new Noeud(nvStagiaire, this.indexNoeudGauche, this.indexNoeudDroit,
-							indexDoublon);
-					nouveauDoublon.ajouterNoeud(nvStagiaire, raf);
+					// remonte de 4 octet le seek pour etre pret à ecrire à index gauche
+					int positionEcrireDoublon = (int) raf.getFilePointer() - 4;
+					raf.seek(positionEcrireDoublon);
+
+					// tu eceris l'index du noeud que tu ajoute (tailles du fichier / taille d'un
+					// noeud en octet)
+					doublon = (int) (raf.length() / tailleNoeud);
+					raf.writeInt(doublon);
+
+					// tu te mets à la fin du fichier
+					raf.seek(raf.length());
+
+					// ecris le nouveauNoeudDroit
+					Noeud nouveauDoublon = new Noeud(nvStagiaire, INDEX_FILS_NUL, INDEX_FILS_NUL, INDEX_FILS_NUL);
+					nouveauDoublon.ecrireStagiaire(nouveauDoublon, raf);
+
 				} else {
-					// je me deplace à la position du doublon actuel
-					raf.seek(this.doublon * tailleNoeud);
-					// on va lire notre noeud existant
-					Noeud nouveauDoublon = lireStagiaire(raf);
-					// on va ajouter le doublon au noeud
-					nouveauDoublon.ajouterNoeud(nvStagiaire, raf);
+					// deplace le seek à FD*taille d'un noeud
+					raf.seek(doublon * tailleNoeud);
 
+					// lit le noeud et tu le stockes dans une variable (nouveauNoeudDroit)
+					Noeud nouveauDNoeud = lireStagiaire(raf);
+					nouveauDNoeud.ajouterNoeud(nvStagiaire, raf);
 				}
 
-			}
+			} 
 		}
 
 		catch (IOException e) {
@@ -196,7 +199,7 @@ public class Noeud {
 				Noeud noeudCourant = lireStagiaire(raf);
 				noeudCourant.affichageInfixeNoeud(raf, stagiaires);
 			}
-			// System.out.println(this.stagiaire);
+			 System.out.println(this);
 			stagiaires.add(this.stagiaire);
 			if (doublon != INDEX_FILS_NUL) {
 
@@ -218,9 +221,9 @@ public class Noeud {
 		}
 	}
 
-	public void rechercherStagiaire(Stagiaire stagiaireRecherche, RandomAccessFile raf, List<Stagiaire>resultat) throws IOException {
+	public void rechercherStagiaire(Stagiaire stagRecherche, RandomAccessFile raf, List<Stagiaire>resultat) throws IOException {
 		//System.out.println(this);
-		int comparaison = this.stagiaire.getNom().trim().compareTo(stagiaireRecherche.getNom().trim());
+		int comparaison = this.stagiaire.getNom().trim().compareTo(stagRecherche.getNom().trim());
 		// sinon on compare le nom du stagiaire présent avec le nom du stagiaire
 		// recherché
 		if (comparaison == 0) {// Stagiaire avec meme nom
@@ -232,13 +235,13 @@ public class Noeud {
 					raf.seek(this.getIndexNoeudGauche() * (tailleNoeud ));// je mets mon pointeur avant le
 					Noeud gauche = lireStagiaire(raf);															// FilsGauche
 					// lire le noeud // pour commncer la comparaison
-					gauche.rechercherStagiaire(stagiaireRecherche, raf, resultat);// on fé appel à la methode recursive
+					gauche.rechercherStagiaire(stagRecherche, raf, resultat);// on fé appel à la methode recursive
 				}
 				if (comparaison < 0) { // si comparaison négative on continue la recherche dans la sous arbre droit
 					if (this.indexNoeudDroit != INDEX_FILS_NUL) { // si le noeud droit existe
 						raf.seek(this.getIndexNoeudDroit() * (tailleNoeud ));
 						Noeud droite = lireStagiaire(raf);													
-						droite.rechercherStagiaire(stagiaireRecherche, raf, resultat);// on fé appel à la methode
+						droite.rechercherStagiaire(stagRecherche, raf, resultat);// on fé appel à la methode
 																						// recursive
 					} else {
 						System.out.println("Ce nom n'existe pas!");
@@ -249,10 +252,12 @@ public class Noeud {
 
 	}
 
-	public void supprimerNoeud(Stagiaire stagiaireSupp, RandomAccessFile raf) {
+	/*public void supprimerNoeud(Stagiaire stagiaireSupp, RandomAccessFile raf) {
 
-	}
-
+	int comparaison = this.stagiaire.getNom().compareTo(stagiaireSupp.getNom());
+	rechercherStagiaire(stagiaireSupp, raf, List<Stagiaire>resultat);
+	this.stagiaire = null;
+	}*/
 	public Stagiaire getStagiaire() {
 		return stagiaire;
 	}

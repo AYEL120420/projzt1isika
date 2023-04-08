@@ -9,24 +9,42 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
+import javafx.scene.layout.FlowPane;
+
 
 public class documentation extends BorderPane {
 	
 	private Scene scene1;
 	private Stage monStage;
-	String blue = "#0077be";
 	
+	
+	BorderStrokeStyle borderStrokeStyle = BorderStrokeStyle.SOLID;
+	CornerRadii cornerRadii = CornerRadii.EMPTY;
+	BorderWidths borderWidths = BorderWidths.DEFAULT;
+	Color borderColor = Color.web("#ADD8E6");
+	BackgroundFill backgroundFill = new BackgroundFill(
+	        new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
+	                new Stop(0, Color.web("#ADD8E6")),
+	                new Stop(1, Color.web("#87CEFA"))),
+	        null, null);
 	
 
 public documentation(Scene scene1, Stage monStage) {
 	this.scene1=scene1;
+	
+	
 	
 	//--------------------------------------------
     //gridpane du haut pour le bouton accueil qui permet de revenir à la premiere scene 
@@ -40,11 +58,6 @@ public documentation(Scene scene1, Stage monStage) {
 		        new Stop(1, Color.web("#0072C6")));
 	TopPane.setBackground(new Background(new BackgroundFill(gradient1, null, null)));
 	
-	ImageView logo = new ImageView(new Image(getClass().getResourceAsStream("/ressources/LogoIsika.png")));
-	logo.setFitWidth(30);
-	logo.setFitHeight(50);
-	TopPane.add(logo, 6, 0, 2, 1);
-	TopPane.setAlignment(Pos.TOP_RIGHT);
 	
     Button btnAccueil = new Button("Accueil");
     TopPane.add(btnAccueil, 0, 0, 1, 1);
@@ -68,4 +81,14 @@ public documentation(Scene scene1, Stage monStage) {
     
 	
 }
+
+FlowPane centerPane = new FlowPane();
+
+
+
+
+
+
 }
+
+

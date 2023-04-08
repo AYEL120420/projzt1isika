@@ -3,7 +3,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -27,17 +26,16 @@ import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Alert;
-
 import java.util.List;
 
 import fr.isika.cda24.MonProjet1.MonProjet1.Stagiaire;
-import fr.isika.cda24.MonProjet1.MonProjetJava.Fx.troisiemeSceneTable;
 
 public class premierSceneBorderPane extends BorderPane {
 	
 	
 
 public Stage monStage;
+//public Scene scene1;
 public Scene scene2;
 public Scene scene3;
 public Scene scene4;
@@ -46,25 +44,32 @@ public Scene scene5;
 private Button actionBtn;
 private List<Stagiaire> stagiaires;
 
+
 public premierSceneBorderPane() {
-	
-	
-	troisiemeSceneTable table = new troisiemeSceneTable(stagiaires, monStage, scene2, scene2);
-	
-	
-	
 
 	BorderStrokeStyle borderStrokeStyle = BorderStrokeStyle.SOLID;
 	CornerRadii cornerRadii = CornerRadii.EMPTY;
 	BorderWidths borderWidths = BorderWidths.DEFAULT;
 	Color borderColor = Color.web("#ADD8E6");
-	BackgroundFill backgroundFill = new BackgroundFill(
-	        new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
-	                new Stop(0, Color.web("#ADD8E6")),
-	                new Stop(1, Color.web("#87CEFA"))),
-	        null, null);
 
-//----------------------------------------------------------------------------------
+	// En-tête
+		HBox topPane = new HBox();
+		topPane.setPrefHeight(50);
+		LinearGradient gradient = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
+				 new Stop(0, Color.web("#0072C6")),
+			        new Stop(0.5, Color.web("#00BFFF")),
+			        new Stop(1, Color.web("#0072C6")));
+		topPane.setBackground(new Background(new BackgroundFill(gradient, null, null)));
+
+		Label titleLabel = new Label("Accueil");
+		titleLabel.setStyle("-fx-font-size: 24; -fx-text-fill: white;");
+		topPane.getChildren().add(titleLabel);
+		HBox.setMargin(titleLabel, new Insets(10, 0, 0, 10));
+
+		topPane.setBorder(new Border(new BorderStroke(borderColor, borderStrokeStyle, cornerRadii, borderWidths)));
+		this.setTop(topPane);
+
+//---------------------------------------------------------------------------------------------------------------------
 	// Accueil pour tout les utilisateurs
 	GridPane centerPane = new GridPane();
 	centerPane.setPrefSize(300, 400);
@@ -91,6 +96,8 @@ public premierSceneBorderPane() {
 	    }
 	});
 	
+
+	
 	centerPane.setVgap(15);
 	centerPane.setHgap(15);
 	centerPane.setAlignment(Pos.CENTER);
@@ -98,26 +105,8 @@ public premierSceneBorderPane() {
 	centerPane.setBorder(new Border(new BorderStroke(borderColor, borderStrokeStyle, cornerRadii, borderWidths)));
 	this.setCenter(centerPane);
 
-//------------------------------------------------------------------------------------------
-	// En-tête
-	HBox topPane = new HBox();
-	topPane.setPrefHeight(50);
-	LinearGradient gradient = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
-			 new Stop(0, Color.web("#0072C6")),
-		        new Stop(0.5, Color.web("#00BFFF")),
-		        new Stop(1, Color.web("#0072C6")));
-	topPane.setBackground(new Background(new BackgroundFill(gradient, null, null)));
-
-	Label titleLabel = new Label("Accueil");
-	titleLabel.setStyle("-fx-font-size: 24; -fx-text-fill: white;");
-	topPane.getChildren().add(titleLabel);
-	HBox.setMargin(titleLabel, new Insets(10, 0, 0, 10));
-
-	topPane.setBorder(new Border(new BorderStroke(borderColor, borderStrokeStyle, cornerRadii, borderWidths)));
-	this.setTop(topPane);
-
-//-----------------------------------------------------------------------------------------------
-
+//-----------------------------------------------------------------------------------------------------------------------------------
+	
 	// Accès Admin
 	GridPane rightPane = new GridPane();
 	rightPane.setPrefSize(400, 600);
@@ -141,25 +130,24 @@ public premierSceneBorderPane() {
 	mdpTxt.setPromptText("Entrez votre mot de passe");
 	rightPane.add(mdpTxt, 1, 2, 3, 1);
 
-	Button valider = new Button ("Valider");
-	valider.setPrefSize(100, 40);
-	rightPane.add(valider, 2, 4, 1, 1);
+	Button cnxBtn = new Button ("Connexion");
+	cnxBtn.setPrefSize(100, 40);
+	rightPane.add(cnxBtn, 2, 4, 1, 1);
 	
 	String adminNum = "FantaS";
-	String adminMdp = "jeSuisAdmin"; // à remplacer par le mot de passe souhaité
+	String adminMdp = "jeSuisAdmin";
+	
 
-	valider.setOnAction(e -> {
+	cnxBtn.setOnAction(e -> {
 	    String numUtilisateur = numTxt.getText();
 	    String mdp = mdpTxt.getText();
 	    if (mdp.equals(adminMdp) && numUtilisateur.equals(adminNum)) {
 	        // Si le mot de passe est correct, afficher les boutons cachés dans la scene 3
-		
-		monStage.setScene(scene3);
-		table.actionBtn.setVisible(true);
-		
-		
 	    	
+	    	((troisiemeSceneTable) scene3.getRoot()).isAdmin = true;
+	    	monStage.setScene(scene3);	    	
 	    	System.out.println("mot de passe correct");
+	    	
 	    } else {
 	        // Si le mot de passe est incorrect, afficher un message d'erreur
 	        Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur d'authentification");
@@ -170,13 +158,15 @@ public premierSceneBorderPane() {
 	    }
 	});
 	
+	
+	
     rightPane.setBorder((new Border(new BorderStroke(borderColor, borderStrokeStyle, cornerRadii, borderWidths))));
     
 	rightPane.setVgap(15);
 	rightPane.setHgap(15);
 	rightPane.setAlignment(Pos.CENTER);
 	this.setRight(rightPane);
-//------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 	
 	
 	GridPane bottomPane = new GridPane ();
@@ -187,8 +177,6 @@ public premierSceneBorderPane() {
 		        new Stop(1, Color.web("#0072C6")));
 	bottomPane.setBackground(new Background(new BackgroundFill(gradient1, null, null)));
 
-	
-//label et bouton pour la documentation 'Besoin d'aide'
 	Label lblBesoinAide = new Label ("Besoin d'aide?");
 	lblBesoinAide.setStyle("-fx-text-fill: White");
 	bottomPane.add(lblBesoinAide, 2, 0, 3, 2);
@@ -217,4 +205,5 @@ public premierSceneBorderPane() {
 	
 	
 }}
+
 

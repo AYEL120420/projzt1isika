@@ -10,7 +10,14 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
+import java.util.List;
+
+
 import fr.isika.cda24.MonProjet1.MonProjet1.Stagiaire;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -35,36 +42,66 @@ public class deuxiemeScene extends BorderPane {
 	private TextField txtDepart; 
 	private TextField txtAnnee;
 	
-//public ArrayList<Stagiaire> stagiaires;
-//	
-//	public deuxiemeScene(ArrayList<Stagiaire> stagiaires) {
-//		
-//		this.stagiaires = stagiaires;
-		
+	public List<Stagiaire> stagiaires;
+	//public ArbreBinaireDeRecherche arbre; 
+	public RandomAccessFile raf;
+	
 	private Scene scene1;
 	public Stage monStage;
 	public Scene scene2;
 	public Scene scene4;
 	public Scene scene3;
 	
-	
-	String blue = "#0077be";
-	
-	
 
-public deuxiemeScene(Scene scene1, Stage monStage) {
+public deuxiemeScene(Scene scene1, Stage monStage) throws IOException {
 	this.scene1=scene1;
+	
+	//this.stagiaires = stagiaires; 
+	raf =  new RandomAccessFile("src/main/java/annuaireTxt/fBinaireStagiaire.bin", "rw");
 		
 
 	BorderStrokeStyle borderStrokeStyle = BorderStrokeStyle.SOLID;
 	CornerRadii cornerRadii = CornerRadii.EMPTY;
 	BorderWidths borderWidths = BorderWidths.DEFAULT;
 	Color borderColor = Color.web("#ADD8E6");
-	BackgroundFill backgroundFill = new BackgroundFill(
-	        new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
-	                new Stop(0, Color.web("#ADD8E6")),
-	                new Stop(1, Color.web("#87CEFA"))),
-	        null, null);
+	
+//------------------------------------------------------------------------------------------------------------------------------------------------
+	
+	 //gridpane du haut pour le bouton accueil qui permet de revenir à la premiere scene 
+    
+    StackPane topPane = new StackPane();
+	topPane.setPrefHeight(50);
+	
+	// commande pour appliquer le dégradé à la gridpane
+	LinearGradient gradient1 = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
+			 new Stop(0, Color.web("#0072C6")),
+		        new Stop(0.5, Color.web("#00BFFF")),
+		        new Stop(1, Color.web("#0072C6")));
+	topPane.setBackground(new Background(new BackgroundFill(gradient1, null, null)));
+
+
+	
+	
+    Button btnAccueil = new Button("Accueil");
+    topPane.getChildren().add(btnAccueil);
+
+	btnAccueil.setOnAction(new EventHandler<ActionEvent>() {
+
+		@Override
+		public void handle(ActionEvent event) {
+			// TODO Auto-generated method stub
+			((troisiemeSceneTable) scene3.getRoot()).isAdmin = false;
+			monStage.setScene(scene1);
+			
+	
+		}
+		
+	});
+	
+	topPane.setBorder(new Border(new BorderStroke(borderColor, borderStrokeStyle, cornerRadii, borderWidths)));
+	this.setTop(topPane);
+	
+//----------------------------------------------------------------------------------------------------------------------------------------------
 
 	//gridpane pour le formulaire de recherche
 	
@@ -113,15 +150,7 @@ public deuxiemeScene(Scene scene1, Stage monStage) {
         txtAnnee.setText("Annee de Formation");
         centerPane.add(lblAnnee,0,6, 2, 1);
         centerPane.add(txtAnnee, 2, 6,2,1);
-//        
-//        Button btnAfficher = new Button("Afficher");
-//        centerPane.add(btnAfficher, 2, 7);
-//        btnAfficher.setMaxSize(100, 300);
-//        
-//        Button btnAjouter = new Button("Ajouter");
-//        centerPane.add(btnAjouter, 3, 7);
-//        btnAjouter.setMaxSize(100, 300);
-        
+      
         GridPane buttonPane = new GridPane();
         buttonPane.setHgap(10);
         Button btnAfficher = new Button("Afficher");
@@ -141,8 +170,7 @@ public deuxiemeScene(Scene scene1, Stage monStage) {
 			public void handle(ActionEvent event) {
 				System.out.println(monStage);
 				System.out.println(scene3);
-				// TODO Auto-generated method stub
-				//monStage = btnBesoinAide.getScene().get;
+				
 				monStage.setScene(scene3);
 		
 			}
@@ -151,63 +179,49 @@ public deuxiemeScene(Scene scene1, Stage monStage) {
 		
 		btnAjouter.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-			     		   Stagiaire s = new Stagiaire(txtNom.getText(),
-			     				  txtPrenom.getText(), txtCycle.getText(),
-			     				  txtAnnee.getText(),txtDepart.getText());
+			     		   Stagiaire stage = new Stagiaire(txtNom.getText(),
+			     				  txtPrenom.getText(), txtDepart.getText(),txtCycle.getText(),
+			     				  txtAnnee.getText());
 
-		
-			}
+						//	System.out.println(stage + " taille de la liste" + stagiaires.size());
+			     		  try {
+			     			  raf = ((troisiemeSceneTable) scene3.getRoot()).raf;
+			     			//  System.out.println(((troisiemeSceneTable) scene3.getRoot()).raf.length() / Noeud.tailleNoeud);
+							((troisiemeSceneTable) scene3.getRoot()).abre.ajouterDansArbre(stage, raf);
+							//System.out.println(((troisiemeSceneTable) scene3.getRoot()).raf.length() / Noeud.tailleNoeud);
+							} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+			     		 
+			     		 
+							stagiaires = ((troisiemeSceneTable) scene3.getRoot()).abre.arbreAffichageInfix(raf);
+							System.out.println(stagiaires.size());
+							try {
+								((troisiemeSceneTable) scene3.getRoot()).getTable().setItems(FXCollections.observableArrayList(stagiaires));
+								monStage.setScene(scene3);
+								//getScene().setRoot(new troisiemeSceneTable(stagiaires, monStage, scene1, scene1));
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+
 			
-		});
-		
-		
+			        	
+			        });
 		
 		monStage.setScene(this.getScene());
-		
-        
-        
+		      
 		centerPane.setVgap(15);
 		centerPane.setHgap(15);
 		centerPane.setAlignment(Pos.CENTER);
 
 		centerPane.setBorder(new Border(new BorderStroke(borderColor, borderStrokeStyle, cornerRadii, borderWidths)));
 		this.setCenter(centerPane);
-
-        
-        
-        
-        
- //--------------------------------------------
-        //gridpane du haut pour le bouton accueil qui permet de revenir à la premiere scene 
-        
-        StackPane topPane = new StackPane();
-    	topPane.setPrefHeight(50);
-    	
-		// commande pour appliquer le dégradé à la gridpane
-    	LinearGradient gradient1 = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
-    			 new Stop(0, Color.web("#0072C6")),
-    		        new Stop(0.5, Color.web("#00BFFF")),
-    		        new Stop(1, Color.web("#0072C6")));
-    	topPane.setBackground(new Background(new BackgroundFill(gradient1, null, null)));
-
- 
-    	
-    	
-        Button btnAccueil = new Button("Accueil");
-        topPane.getChildren().add(btnAccueil);
-
-		btnAccueil.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				// TODO Auto-generated method stub
-				monStage.setScene(scene1);
-				
-		
-			}
-			
-		});
-		
+       
+ //-------------------------------------------------------------------------------------------------------------------------------------------------
+       		
 		GridPane bottomPane = new GridPane ();
 		bottomPane.setPrefHeight(50);
 		LinearGradient gradient = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
@@ -215,23 +229,13 @@ public deuxiemeScene(Scene scene1, Stage monStage) {
 			        new Stop(0.5, Color.web("#00BFFF")),
 			        new Stop(1, Color.web("#0072C6")));
 		bottomPane.setBackground(new Background(new BackgroundFill(gradient1, null, null)));
-
 		
+		bottomPane.setBorder(new Border(new BorderStroke(borderColor, borderStrokeStyle, cornerRadii, borderWidths)));
+		this.setBottom(bottomPane);
+	
 		monStage.setScene(this.getScene());
 		
-		topPane.setBorder(new Border(new BorderStroke(borderColor, borderStrokeStyle, cornerRadii, borderWidths)));
-		this.setTop(topPane);
-
+}		
 }
-		
-
-
-		
-
-
-
-
-}
-        
-	
+        	
 	

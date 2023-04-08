@@ -1,6 +1,5 @@
 package fr.isika.cda24.MonProjet1.MonProjet1;
 
-
 public class Stagiaire {
 //mon objet stagiaire fera au max (21*2 +20*2 +11*2 +2*2 +4*2)= 116 octets 
 	// On fixe une taille max pour chaque attribut
@@ -23,6 +22,10 @@ public class Stagiaire {
 		this.cycle = cycle;
 		this.annee = annee;
 
+	}
+
+	public Stagiaire() {
+		// TODO Auto-generated constructor stub
 	}
 
 	// getters & setters

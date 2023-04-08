@@ -1,18 +1,21 @@
 package fr.isika.cda24.projet1.lanceur;
-
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.List;
 
+import fr.isika.cda24.MonProjet1.MonProjet1.Annuaire;
 import fr.isika.cda24.MonProjet1.MonProjet1.ArbreBinaireDeRecherche;
 import fr.isika.cda24.MonProjet1.MonProjet1.Stagiaire;
 
 public class Lanceur {
 
 	public static void main(String[] args) throws IOException {
-
+	
+		Annuaire annuaire = new Annuaire();
+		annuaire.creerFichierTxt();
+		
 		ArbreBinaireDeRecherche arbre = new ArbreBinaireDeRecherche();
-		RandomAccessFile raf = new RandomAccessFile("src/main/java/annuaire/fBinaireStagiaire.bin", "rw");
+		RandomAccessFile raf = new RandomAccessFile("src/main/java/annuaireTxt/fBinaireStagiaire.bin", "rw");
 
 		Stagiaire st = new Stagiaire("AKHIAD", "Brahim", "80", "AI 60", "2003");
 		// arbre.ajouterDansArbre(st, raf);
