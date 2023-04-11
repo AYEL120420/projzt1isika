@@ -35,9 +35,10 @@ import javafx.util.Callback;
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 public class troisiemeSceneTable extends BorderPane {
 
@@ -55,10 +56,11 @@ public class troisiemeSceneTable extends BorderPane {
 
 	public boolean isAdmin = false;
 	public ArbreBinaireDeRecherche abre;
-	private TableView<Stagiaire> table = new TableView<Stagiaire>();
+	public TableView<Stagiaire> table = new TableView<Stagiaire>();
 	public RandomAccessFile raf;
 	GridPane profilPane = new GridPane();
 	public List<Stagiaire> stagiaires;
+	private int selectedIndex = -1;
 
 	public TableView<Stagiaire> getTable() {
 		return table;
@@ -68,9 +70,9 @@ public class troisiemeSceneTable extends BorderPane {
 		this.table = table;
 	}
 
-	public troisiemeSceneTable(List<Stagiaire> stagiaires, Stage monStage, Scene scene1, Scene scene2)
+	public troisiemeSceneTable(List<Stagiaire> stagiaires, Stage monStage, Scene scene1, Scene scene2, boolean isAdmin)
 			throws IOException {
-
+		this.isAdmin = isAdmin;
 		this.abre = new ArbreBinaireDeRecherche();
 		raf = new RandomAccessFile("src/main/java/annuaireTxt/fBinaireStagiaire.bin", "rw");
 		if (raf.length() == 0) {
@@ -85,7 +87,6 @@ public class troisiemeSceneTable extends BorderPane {
 		txtDepart = new TextField();
 		txtAnnee = new TextField();
 
-		
 		TableColumn<Stagiaire, String> nomCol = new TableColumn<Stagiaire, String>("Nom");
 		nomCol.setMinWidth(100);
 
@@ -120,7 +121,8 @@ public class troisiemeSceneTable extends BorderPane {
 		table.setPadding(new Insets(10));
 
 		table.setEditable(true);
-		table.setStyle("-fx-background-color: white; -fx-border-color: blue; -fx-border-width: 1px; -fx-border-style: solid;");
+		table.setStyle(
+				"-fx-background-color: white; -fx-border-color: blue; -fx-border-width: 1px; -fx-border-style: solid;");
 
 		// Méthode pour effectuer la recherche avancée
 		FilteredList<Stagiaire> donneeFiltre = new FilteredList<>(FXCollections.observableList(stagiaires), p -> true);
@@ -155,28 +157,26 @@ public class troisiemeSceneTable extends BorderPane {
 		addButtonToTable();
 
 //----------------------------------------------------------------------------------------------------------------------------------------------	
-		StackPane TopPane = new StackPane();
+		GridPane TopPane = new GridPane();
 		TopPane.setPrefHeight(50);
 		LinearGradient gradient1 = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
 				new Stop(0, Color.web("#0072C6")), new Stop(0.5, Color.web("#00BFFF")),
 				new Stop(1, Color.web("#0072C6")));
 		TopPane.setBackground(new Background(new BackgroundFill(gradient1, null, null)));
 
-		Button btnAcc = new Button("Accueil");
+		//Button btnAcc = new Button("Accueil");
 		Button btnRetour = new Button("Retour");
 
-		TopPane.getChildren().addAll(btnAcc, btnRetour);
+		
 
-		this.setTop(TopPane);
-
-		btnAcc.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-
-				monStage.setScene(scene1);
-				;
-			}
-		});
+//		btnAcc.setOnAction(new EventHandler<ActionEvent>() {
+//			@Override
+//			public void handle(ActionEvent event) {
+//
+//				monStage.setScene(scene1);
+//				;
+//			}
+//		});
 
 		btnRetour.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -186,12 +186,19 @@ public class troisiemeSceneTable extends BorderPane {
 				monStage.setScene(scene2);
 			}
 		});
+		
+
+		//TopPane.add(btnAcc, 1, 0, 1, 1);
+		TopPane.add(btnRetour, 2, 0, 1,1);
+		
+
+		this.setTop(TopPane);
 
 	}
 
 	// ----------------------------------------------------------------------------------------------------------------------------------------------
-	
-	private void addButtonToTable() throws IOException {
+
+	public void addButtonToTable() throws IOException {
 		TableColumn<Stagiaire, String> actionCol = new TableColumn("Profil");
 
 		Callback<TableColumn<Stagiaire, String>, TableCell<Stagiaire, String>> cellFactory = new Callback<TableColumn<Stagiaire, String>, TableCell<Stagiaire, String>>() {
@@ -202,9 +209,11 @@ public class troisiemeSceneTable extends BorderPane {
 					public Button actionBtn = new Button("Afficher le profil");
 					{
 						actionBtn.setVisible(isAdmin);
+						
 						actionBtn.setOnAction((ActionEvent event) -> {
+							selectedIndex= getIndex();
 							Stagiaire stagiaire = getTableView().getItems().get(getIndex());
-							System.out.println(stagiaire);
+							//System.out.println(stagiaire);
 
 							profilPane.setVisible(true);
 
@@ -233,8 +242,6 @@ public class troisiemeSceneTable extends BorderPane {
 
 		actionCol.setCellFactory(cellFactory);
 		table.getColumns().add(actionCol);
-
-
 
 //------------------------------------------------------------------------------------------------------------------------------	
 		profilPane.setPrefSize(500, 600);
@@ -300,59 +307,51 @@ public class troisiemeSceneTable extends BorderPane {
 
 			Optional<ButtonType> result = confirmAlert.showAndWait();
 			if (result.isPresent() && result.get() == ButtonType.OK) {
-				// Suppression du stagiaire sélectionné
-				Stagiaire stagiaire = new Stagiaire(txtNom.getText(),
-	     				  txtPrenom.getText(), txtDepart.getText(),txtCycle.getText(),
-	     				  txtAnnee.getText());
-				 try {
+							// Suppression du stagiaire sélectionné
+				Stagiaire stagiaire = new Stagiaire(txtNom.getText(), txtPrenom.getText(), txtDepart.getText(),
+						txtCycle.getText(), txtAnnee.getText());
+				try {
 
 					abre.supprimerStagiaire(stagiaire, raf);
-					
-					} catch (IOException e1) {
+
+				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-	     		 
-	     		 
-					stagiaires = abre.arbreAffichageInfix(raf);
-					System.out.println(stagiaires.size());
-					try {
-						 getTable().setItems(FXCollections.observableArrayList(stagiaires));
-						monStage.setScene(scene3);
-						//getScene().setRoot(new troisiemeSceneTable(stagiaires, monStage, scene1, scene1));
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+
+				stagiaires = abre.arbreAffichageInfix(raf);
+				System.out.println(stagiaires.size());
+				try {
+					getTable().setItems(FXCollections.observableArrayList(stagiaires));
+					monStage.setScene(scene3);
+					// getScene().setRoot(new troisiemeSceneTable(stagiaires, monStage, scene1,
+					// scene1));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			
+			}
 
 		});
-		
+
 		btnEditer.setOnAction((ActionEvent event1) -> {
+			Stagiaire stagiaireAModif = table.getItems().get(selectedIndex);
+			Stagiaire stagiaire = new Stagiaire(txtNom.getText(), txtPrenom.getText(), txtDepart.getText(),
+					txtCycle.getText(), txtAnnee.getText());
 
-			Stagiaire stagiaire = new Stagiaire(txtNom.getText(),
-   				  txtPrenom.getText(), txtDepart.getText(),txtCycle.getText(),
-   				  txtAnnee.getText());
-			
-				 abre.modifierStagiaire(stagiaire, raf);
-	     		 
-	     		 
-					stagiaires = abre.arbreAffichageInfix(raf);
-					System.out.println(stagiaires.size());
-					try {
-						 getTable().setItems(FXCollections.observableArrayList(stagiaires));
-						
-					
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				
-			
+			abre.modifierStagiaire(stagiaire,stagiaireAModif, raf);
+
+			stagiaires = abre.arbreAffichageInfix(raf);
+			//System.out.println(stagiaires.size());
+			try {
+				getTable().setItems(FXCollections.observableArrayList(stagiaires));
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		});
-
 
 		profilPane.setVgap(15);
 		profilPane.setHgap(15);
@@ -363,27 +362,29 @@ public class troisiemeSceneTable extends BorderPane {
 
 		this.setRight(profilPane);
 		this.getRight().setVisible(false);
-	
-	//----------------------------------------------------------------------------------------------------------------------------
-			StackPane bottomPane = new StackPane();
-			bottomPane.setPrefHeight(50);
-			LinearGradient gradient1 = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
-					new Stop(0, Color.web("#0072C6")), new Stop(0.5, Color.web("#00BFFF")),
-					new Stop(1, Color.web("#0072C6")));
-			bottomPane.setBackground(new Background(new BackgroundFill(gradient1, null, null)));
 
-			Button btnImprime = new Button("Imprimer");
-			bottomPane.getChildren().add(btnImprime);
+		// ----------------------------------------------------------------------------------------------------------------------------
+		StackPane bottomPane = new StackPane();
+		bottomPane.setPrefHeight(50);
+		LinearGradient gradient1 = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
+				new Stop(0, Color.web("#0072C6")), new Stop(0.5, Color.web("#00BFFF")),
+				new Stop(1, Color.web("#0072C6")));
+		bottomPane.setBackground(new Background(new BackgroundFill(gradient1, null, null)));
 
-			btnImprime.setOnAction(e -> {
-				PrinterJob job = PrinterJob.createPrinterJob();
-				if (job != null) {
-					job.showPrintDialog(monStage);
-					job.printPage(table);
-					job.endJob();
-				}
+		Button btnImprime = new Button("Imprimer");
+		bottomPane.getChildren().add(btnImprime);
 
-			});
-			this.setBottom(bottomPane);
-}
+		btnImprime.setOnAction(e -> {
+			PrinterJob job = PrinterJob.createPrinterJob();
+			if (job != null) {
+				job.showPrintDialog(monStage);
+				job.printPage(table);
+				job.endJob();
+			}
+
+		});
+		this.setBottom(bottomPane);
 	}
+	
+
+}

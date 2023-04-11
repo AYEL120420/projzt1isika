@@ -41,7 +41,7 @@ public class App extends Application {
     	root1.monStage= monStage;
     	root1.scene2 = scene2;
     	
-    	troisiemeSceneTable root3 = new troisiemeSceneTable(stagiaires, monStage, scene1, scene2);
+    	troisiemeSceneTable root3 = new troisiemeSceneTable(stagiaires, monStage, scene1, scene2, false);
     	scene3 = new Scene(root3, 1200,800);
     	root2.monStage= monStage;
     	root2.scene3 = scene3;

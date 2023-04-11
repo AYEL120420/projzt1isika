@@ -5,21 +5,40 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * La classe ArbreBinaireDeRecherche permet de gerer le fichier binaire
+ * 
+ * @author 33665
+ *
+ */
 public class ArbreBinaireDeRecherche {
 
 	private Noeud racine;
 	private RandomAccessFile raf;
 	Annuaire annuaire = new Annuaire();
 
+	/**
+	 * Le constructeur intialise un arbre binaire de recherche par sa racine
+	 * 
+	 * @throws IOException
+	 */
+	
 	// Constructeur
-
 	public ArbreBinaireDeRecherche() throws IOException {
 
 		this.racine = new Noeud(null, 1, -1, -1);
 		raf = new RandomAccessFile("src/main/java/annuaireTxt/fBinaireStagiaire.bin", "rw");
 	}
-
-	// Methode pour ecrire dans un fichier binaire a partir du fichier texte 
+	
+	
+	//Methodes
+	/**
+	 * La methode permet d'ecrire une liste de stagiaire dans le fichier binaire à
+	 * partir d'un fichier texte
+	 * 
+	 * @throws IOException
+	 */
+	
 	public void ecrireDansFichierBinaire() throws IOException {
 
 		List<Stagiaire> stagiaires = annuaire.lireFichierTxt();
@@ -29,9 +48,14 @@ public class ArbreBinaireDeRecherche {
 			ajouterDansArbre(s, raf);
 		}
 	}
+	
 
-	// methodes pour lire dans le fichier binaire et retourne la liste des
-	// stagiaires
+	/**
+	 * La methode lireFichierBinaire permet de lire un fichier binaire et retourne une liste des stagiaires
+	 * @return
+	 * @throws IOException
+	 */
+	
 	public List<Stagiaire> lireFichierBinaire() throws IOException {
 		raf.seek(0);
 		int nbStagiaire = (int) raf.length() / Stagiaire.TAILLE_STAGIAIRE_OCTET;
@@ -71,8 +95,15 @@ public class ArbreBinaireDeRecherche {
 		return stagiaires;
 
 	}
-
-	// methode pour ecrire un stagiaire dans un arbre binaire
+	
+	
+	/**
+	 * La methode ajouterDansArbre permet d'ajouter un Noeud dans l'arbre binaire de recherche
+	 * @param stagiaire
+	 * @param raf
+	 * @throws IOException
+	 */
+	
 	public void ajouterDansArbre(Stagiaire stagiaire, RandomAccessFile raf) throws IOException {
 
 		if (raf.length() == 0) {
@@ -81,13 +112,20 @@ public class ArbreBinaireDeRecherche {
 			racine.ecrireStagiaire(racine, raf);
 
 		} else {
+			System.out.println(stagiaire);
 			raf.seek(0);
 			racine = racine.lireNoeud(raf);
 			racine.ajouterNoeud(stagiaire, raf);
 		}
 	}
-
-	// methode pour un affichage de l'arbre en ordre
+	
+	
+	/**
+	 * La methode arbreAffichageInfix permet d'afficher les stagiaires dans un ordre alphabetique et retourne la liste des stagiaires dans l'ordre
+	 * @param raf
+	 * @return
+	 */
+	
 	public List<Stagiaire> arbreAffichageInfix(RandomAccessFile raf) {
 		List<Stagiaire> stagiaires = new ArrayList<>();
 		try {
@@ -106,7 +144,16 @@ public class ArbreBinaireDeRecherche {
 		}
 		return stagiaires;
 	}
-	// methode pour la recherche dans l arbre 
+	
+	
+	/**
+	 * la methode resultatRecherche permet rechercher un stagaire dans l'arbre binaire et retourne une liste de stagiaire et fait appel à la methode rechercherStagiaire de la classe Noeud
+	 * @param stagRecherche
+	 * @param raf
+	 * @return
+	 * @throws IOException
+	 */
+	
 	public List<Stagiaire> resultatRecherche(Stagiaire stagRecherche, RandomAccessFile raf) throws IOException {
 		List<Stagiaire> resultat = new ArrayList<>();
 		if (raf.length() == 0) {
@@ -119,7 +166,15 @@ public class ArbreBinaireDeRecherche {
 	}
 	return resultat;
 	}
-	//methode pour supprimer un stagiaire de l'arbre
+	
+	
+	/**
+	 * la methode supprimerStagaire permet la suppression su stagiaire de l'arbre binaire et fait appel à la methode rechercherStagiaireASupprime de la classe Noeud
+	 * @param stagSuppression
+	 * @param raf
+	 * @throws IOException
+	 */ 
+	
 	public void supprimerStagiaire(Stagiaire stagSuppression, RandomAccessFile raf) throws IOException {
 		if(raf.length() == 0 ) {
 			System.out.println("l'arbre est vide");
@@ -129,24 +184,23 @@ public class ArbreBinaireDeRecherche {
 			racine.rechercherStagiaireASupprime(stagSuppression, raf, 0);
 		}
 	}
-	
-	public Stagiaire modifierStagiaire(Stagiaire stagMAJ, RandomAccessFile raf) {
+	/**
+	 * la mehtode modifierStagaire met à jour les informations d'un stagiaire
+	 * @param stagMAJ
+	 * @param stagAmodifie
+	 * @param raf
+	 */
+	public void modifierStagiaire(Stagiaire stagMAJ,Stagiaire stagAmodifie, RandomAccessFile raf) {
 		try {
-			if (raf.length() == 0) {
-				System.out.println("arbre vi/"
-						+ "de");
-			} else {
-				raf.seek(0);
-				Noeud noeudAModifie = racine.lireNoeud(raf);
-				noeudAModifie.modifierStagiaire(stagMAJ, raf);
-				
-			}} catch (IOException e) {
+		supprimerStagiaire(stagAmodifie, raf);
+		ajouterDansArbre(stagMAJ, raf);
+
+		} catch (IOException e) {
 				// 
 				e.printStackTrace();
 			}
-		return stagMAJ;
+
 }
-	
 }
 
 			

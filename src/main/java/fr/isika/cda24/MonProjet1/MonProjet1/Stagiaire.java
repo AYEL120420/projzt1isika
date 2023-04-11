@@ -1,4 +1,9 @@
 package fr.isika.cda24.MonProjet1.MonProjet1;
+/**
+ * Cette classe represente un objet stagiaire
+ * @author 33665
+ *
+ */
 
 public class Stagiaire {
 //mon objet stagiaire fera au max (21*2 +20*2 +11*2 +2*2 +4*2)= 116 octets 
@@ -12,7 +17,14 @@ public class Stagiaire {
 
 	// Attributs de la classe stagiaire
 	String nom, prenom, cycle, annee, departement;
-
+	/**
+	 * Constructeur permettant d'initialiser un stagiaire via 5 attributs: 
+	 * @param nom
+	 * @param prenom
+	 * @param departement
+	 * @param cycle
+	 * @param annee
+	 */
 	// Constructeur
 	public Stagiaire(String nom, String prenom, String departement, String cycle, String annee) {
 
@@ -28,47 +40,10 @@ public class Stagiaire {
 		// TODO Auto-generated constructor stub
 	}
 
-	// getters & setters
-	public String getNom() {
-		return nom;
-	}
-
-	public void setNom(String nom) {
-		this.nom = nom;
-	}
-
-	public String getPrenom() {
-		return prenom;
-	}
-
-	public void setPrenom(String prenom) {
-		this.prenom = prenom;
-	}
-
-	public String getAnnee() {
-		return annee;
-	}
-
-	public void setAnnee(String annee) {
-		this.annee = annee;
-	}
-
-	public String getDepartement() {
-		return departement;
-	}
-
-	public void setDepartement(String departement) {
-		this.departement = departement;
-	}
-
-	public String getCycle() {
-		return cycle;
-	}
-
-	public void setCycle(String cycle) {
-		this.cycle = cycle;
-	}
-
+	
+	/**
+	 *  La methode toString renvoie une chaine de caractère permettant de représenter un stagiaire
+	 */
 	// methode toString
 
 	@Override
@@ -77,9 +52,12 @@ public class Stagiaire {
 				+ ", annee= " + annee ;
 	}
 	
+	/**
+	 * La methode comparer permet de comparer 2 objets stagiaire retourne la valeur de la comparaison
+	 * @param stagiaireRecherche
+	 * @return
+	 */
 	
-	
-
 	// methodes specifiques
 		public int comparer(Stagiaire stagiaireRecherche) {
 			int resultat = this.nom.compareTo(stagiaireRecherche.getNom());
@@ -105,7 +83,50 @@ public class Stagiaire {
 
 			return resultat;
 		}
-		
+		/**
+		 * getters et setters
+		 * @return
+		 */
+		// getters & setters
+		public String getNom() {
+			return nom;
+		}
+
+		public void setNom(String nom) {
+			this.nom = nom;
+		}
+
+		public String getPrenom() {
+			return prenom;
+		}
+
+		public void setPrenom(String prenom) {
+			this.prenom = prenom;
+		}
+
+		public String getAnnee() {
+			return annee;
+		}
+
+		public void setAnnee(String annee) {
+			this.annee = annee;
+		}
+
+		public String getDepartement() {
+			return departement;
+		}
+
+		public void setDepartement(String departement) {
+			this.departement = departement;
+		}
+
+		public String getCycle() {
+			return cycle;
+		}
+
+		public void setCycle(String cycle) {
+			this.cycle = cycle;
+		}
 	public String getNomLong() {
 		String nomLong = this.nom;
 
@@ -136,7 +157,7 @@ public class Stagiaire {
 	public String getDepartementLong() {
 		String departementLong = this.departement;
 
-		for (int i = this.prenom.length(); i < TAILLE_DEPARTEMENT_MAX; i++) {
+		for (int i = this.departement.length(); i < TAILLE_DEPARTEMENT_MAX; i++) {
 			departementLong += " ";
 		}
 		return departementLong;
@@ -146,7 +167,7 @@ public class Stagiaire {
 	public String getAnneeLong() {
 		String anneeLong = this.annee;
 
-		for (int i = this.prenom.length(); i < TAILLE_ANNEE_MAX; i++) {
+		for (int i = this.annee.length(); i < TAILLE_ANNEE_MAX; i++) {
 			anneeLong += " ";
 		}
 		return anneeLong;

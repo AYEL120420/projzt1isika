@@ -15,7 +15,7 @@ import java.io.RandomAccessFile;
 
 import java.util.List;
 
-
+import fr.isika.cda24.MonProjet1.MonProjet1.ArbreBinaireDeRecherche;
 import fr.isika.cda24.MonProjet1.MonProjet1.Stagiaire;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -43,7 +43,7 @@ public class deuxiemeScene extends BorderPane {
 	private TextField txtAnnee;
 	
 	public List<Stagiaire> stagiaires;
-	//public ArbreBinaireDeRecherche arbre; 
+	public ArbreBinaireDeRecherche arbre; 
 	public RandomAccessFile raf;
 	
 	private Scene scene1;
@@ -56,9 +56,9 @@ public class deuxiemeScene extends BorderPane {
 public deuxiemeScene(Scene scene1, Stage monStage) throws IOException {
 	this.scene1=scene1;
 	
-	//this.stagiaires = stagiaires; 
+
 	raf =  new RandomAccessFile("src/main/java/annuaireTxt/fBinaireStagiaire.bin", "rw");
-		
+	this.arbre = new ArbreBinaireDeRecherche();	
 
 	BorderStrokeStyle borderStrokeStyle = BorderStrokeStyle.SOLID;
 	CornerRadii cornerRadii = CornerRadii.EMPTY;
@@ -179,30 +179,27 @@ public deuxiemeScene(Scene scene1, Stage monStage) throws IOException {
 		
 		btnAjouter.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-			     		   Stagiaire stage = new Stagiaire(txtNom.getText(),
+			     		   Stagiaire stagiaire = new Stagiaire(txtNom.getText(),
 			     				  txtPrenom.getText(), txtDepart.getText(),txtCycle.getText(),
 			     				  txtAnnee.getText());
-
-						//	System.out.println(stage + " taille de la liste" + stagiaires.size());
+			     		   
+			
 			     		  try {
-			     			  raf = ((troisiemeSceneTable) scene3.getRoot()).raf;
-			     			//  System.out.println(((troisiemeSceneTable) scene3.getRoot()).raf.length() / Noeud.tailleNoeud);
-							((troisiemeSceneTable) scene3.getRoot()).abre.ajouterDansArbre(stage, raf);
-							//System.out.println(((troisiemeSceneTable) scene3.getRoot()).raf.length() / Noeud.tailleNoeud);
+							arbre.ajouterDansArbre(stagiaire, raf);
+		
 							} catch (IOException e1) {
-							// TODO Auto-generated catch block
+						
 							e1.printStackTrace();
 						}
-			     		 
-			     		 
-							stagiaires = ((troisiemeSceneTable) scene3.getRoot()).abre.arbreAffichageInfix(raf);
-							System.out.println(stagiaires.size());
+							stagiaires =arbre.arbreAffichageInfix(raf);
+					
 							try {
 								((troisiemeSceneTable) scene3.getRoot()).getTable().setItems(FXCollections.observableArrayList(stagiaires));
+								scene3.setRoot(new troisiemeSceneTable(stagiaires, monStage, scene1, getScene(), ((premierSceneBorderPane) scene1.getRoot()).isAdmin));
 								monStage.setScene(scene3);
-								//getScene().setRoot(new troisiemeSceneTable(stagiaires, monStage, scene1, scene1));
+							
 							} catch (Exception e) {
-								// TODO Auto-generated catch block
+							
 								e.printStackTrace();
 							}
 						}

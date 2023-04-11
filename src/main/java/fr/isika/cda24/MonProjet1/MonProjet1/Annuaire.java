@@ -5,14 +5,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
+/**
+ * La classe Anuuaire represente un objet annuaire contenant les methodes pour gerer le fichier texte
+ * @author 33665
+ *
+ */
 public class Annuaire {
 
-//lecture du fichier text contenant la liste des stagiaires 
-//on cree une liste chainée des stagiaires
-
 //on cree un annuaire texte pour avoir un chemin relatif
-
+	/**
+	 * methode creerFichierTxt permet de creer un fichier text dans mon projet
+	 */
 	public void creerFichierTxt() {
 
 		File annuaire = new File("src/main/java/annuaireTxt");
@@ -27,7 +30,10 @@ public class Annuaire {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * methode lireFichierTxt permet de lire le fichier text et retourne un liste des stagiaires 
+	 * @return
+	 */
 	public ArrayList<Stagiaire> lireFichierTxt() {
 		
 		ArrayList<Stagiaire> stagiaires = new ArrayList<>();
