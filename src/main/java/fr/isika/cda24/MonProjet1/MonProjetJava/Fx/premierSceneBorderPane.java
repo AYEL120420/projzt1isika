@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -27,6 +28,7 @@ import javafx.stage.Stage;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Alert;
 import java.util.List;
+import java.util.Optional;
 
 import fr.isika.cda24.MonProjet1.MonProjet1.Stagiaire;
 
@@ -35,14 +37,16 @@ public class premierSceneBorderPane extends BorderPane {
 	
 
 public Stage monStage;
-//public Scene scene1;
+public Scene scene1;
 public Scene scene2;
 public Scene scene3;
 public Scene scene4;
-String blue = "#0077be";
 public Scene scene5;
 private Button actionBtn;
 private List<Stagiaire> stagiaires;
+public boolean isAdmin = false;
+String blue = "#0077BE";
+
 
 
 public premierSceneBorderPane() {
@@ -84,7 +88,7 @@ public premierSceneBorderPane() {
 	// Bouton entrer pour un accès restreint sans identifiants
 	Button entrer = new Button("Entrer");
 	entrer.setPrefSize(100, 40);
-	centerPane.add(entrer, 2, 3, 1, 1);
+	centerPane.add(entrer, 2, 3, 2, 2);
 
 	entrer.setOnAction(new EventHandler<ActionEvent>() {
 	    @Override
@@ -133,10 +137,19 @@ public premierSceneBorderPane() {
 	Button cnxBtn = new Button ("Connexion");
 	cnxBtn.setPrefSize(100, 40);
 	rightPane.add(cnxBtn, 2, 4, 1, 1);
-	
+	cnxBtn.setPrefSize(100, 40);
 	String adminNum = "FantaS";
 	String adminMdp = "jeSuisAdmin";
 	
+	Button deconnexionBtn = new Button("Déconnexion");
+	deconnexionBtn.setVisible(false);
+	BackgroundFill bgFill = new BackgroundFill(
+	        new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
+	                new Stop(0, Color.CRIMSON),
+	                new Stop(1,Color.ALICEBLUE)),
+	        CornerRadii.EMPTY, Insets.EMPTY);
+	deconnexionBtn.setBackground(new Background(new BackgroundFill(gradient, null, null)));
+	deconnexionBtn.setPrefSize(100, 40);
 
 	cnxBtn.setOnAction(e -> {
 	    String numUtilisateur = numTxt.getText();
@@ -145,6 +158,9 @@ public premierSceneBorderPane() {
 	        // Si le mot de passe est correct, afficher les boutons cachés dans la scene 3
 	    	
 	    	((troisiemeSceneTable) scene3.getRoot()).isAdmin = true;
+	    	rightPane.add(deconnexionBtn, 2, 5, 1, 1);
+	    	    deconnexionBtn.setVisible(true);
+	    	    
 	    	monStage.setScene(scene3);	    	
 	    	System.out.println("mot de passe correct");
 	    	
@@ -157,8 +173,23 @@ public premierSceneBorderPane() {
 	        System.out.println("mot de passe incorrect");
 	    }
 	});
+
 	
-	
+	deconnexionBtn.setOnAction(e -> {
+   
+	    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+	    alert.setTitle("Déconnexion");
+	    alert.setHeaderText("Êtes-vous sûr de vouloir vous déconnecter ?");
+	    Optional<ButtonType> result = alert.showAndWait();
+	    if (result.isPresent() && result.get() == ButtonType.OK) {    
+	    	
+	    	 numTxt.setText("");
+	         mdpTxt.setText("");
+	        ((troisiemeSceneTable) scene3.getRoot()).isAdmin = false;
+	        deconnexionBtn.setVisible(false);
+	    }
+	    
+	});
 	
     rightPane.setBorder((new Border(new BorderStroke(borderColor, borderStrokeStyle, cornerRadii, borderWidths))));
     
@@ -180,8 +211,9 @@ public premierSceneBorderPane() {
 	Label lblBesoinAide = new Label ("Besoin d'aide?");
 	lblBesoinAide.setStyle("-fx-text-fill: White");
 	bottomPane.add(lblBesoinAide, 2, 0, 3, 2);
-	Button btnBesoinAide = new Button ("cliquez ici !");
-	btnBesoinAide.setPrefHeight(50);
+	Button btnBesoinAide = new Button();
+	ImageView image = new ImageView(new Image(getClass().getResourceAsStream("/ressources/infoBtn.png")));
+	btnBesoinAide.setGraphic(image);
 	bottomPane.add(btnBesoinAide, 5, 0, 3, 2);
 	
 	btnBesoinAide.setOnAction(new EventHandler<ActionEvent>() {

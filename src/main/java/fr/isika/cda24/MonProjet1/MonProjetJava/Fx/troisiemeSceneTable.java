@@ -58,6 +58,7 @@ public class troisiemeSceneTable extends BorderPane {
 	private TableView<Stagiaire> table = new TableView<Stagiaire>();
 	public RandomAccessFile raf;
 	GridPane profilPane = new GridPane();
+	public List<Stagiaire> stagiaires;
 
 	public TableView<Stagiaire> getTable() {
 		return table;
@@ -84,6 +85,7 @@ public class troisiemeSceneTable extends BorderPane {
 		txtDepart = new TextField();
 		txtAnnee = new TextField();
 
+		
 		TableColumn<Stagiaire, String> nomCol = new TableColumn<Stagiaire, String>("Nom");
 		nomCol.setMinWidth(100);
 
@@ -189,7 +191,7 @@ public class troisiemeSceneTable extends BorderPane {
 
 	// ----------------------------------------------------------------------------------------------------------------------------------------------
 	
-	private void addButtonToTable() {
+	private void addButtonToTable() throws IOException {
 		TableColumn<Stagiaire, String> actionCol = new TableColumn("Profil");
 
 		Callback<TableColumn<Stagiaire, String>, TableCell<Stagiaire, String>> cellFactory = new Callback<TableColumn<Stagiaire, String>, TableCell<Stagiaire, String>>() {
@@ -299,10 +301,58 @@ public class troisiemeSceneTable extends BorderPane {
 			Optional<ButtonType> result = confirmAlert.showAndWait();
 			if (result.isPresent() && result.get() == ButtonType.OK) {
 				// Suppression du stagiaire sélectionné
-				// insérer ici la méthode supprimer : maListe.remove(stagiaire);
-			}
+				Stagiaire stagiaire = new Stagiaire(txtNom.getText(),
+	     				  txtPrenom.getText(), txtDepart.getText(),txtCycle.getText(),
+	     				  txtAnnee.getText());
+				 try {
+
+					abre.supprimerStagiaire(stagiaire, raf);
+					
+					} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+	     		 
+	     		 
+					stagiaires = abre.arbreAffichageInfix(raf);
+					System.out.println(stagiaires.size());
+					try {
+						 getTable().setItems(FXCollections.observableArrayList(stagiaires));
+						monStage.setScene(scene3);
+						//getScene().setRoot(new troisiemeSceneTable(stagiaires, monStage, scene1, scene1));
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			
 
 		});
+		
+		btnEditer.setOnAction((ActionEvent event1) -> {
+
+			Stagiaire stagiaire = new Stagiaire(txtNom.getText(),
+   				  txtPrenom.getText(), txtDepart.getText(),txtCycle.getText(),
+   				  txtAnnee.getText());
+			
+				 abre.modifierStagiaire(stagiaire, raf);
+	     		 
+	     		 
+					stagiaires = abre.arbreAffichageInfix(raf);
+					System.out.println(stagiaires.size());
+					try {
+						 getTable().setItems(FXCollections.observableArrayList(stagiaires));
+						
+					
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+			
+
+		});
+
 
 		profilPane.setVgap(15);
 		profilPane.setHgap(15);

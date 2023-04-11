@@ -16,11 +16,10 @@ public class ArbreBinaireDeRecherche {
 	public ArbreBinaireDeRecherche() throws IOException {
 
 		this.racine = new Noeud(null, 1, -1, -1);
-		raf = new RandomAccessFile("src/main/java/annuairetxt/fBinaireStagiaire.bin", "rw");
+		raf = new RandomAccessFile("src/main/java/annuaireTxt/fBinaireStagiaire.bin", "rw");
 	}
 
-	// Methode pour ecrire dans un fichier binaire a partir du fichier texte des
-	// stagiaires
+	// Methode pour ecrire dans un fichier binaire a partir du fichier texte 
 	public void ecrireDansFichierBinaire() throws IOException {
 
 		List<Stagiaire> stagiaires = annuaire.lireFichierTxt();
@@ -73,7 +72,7 @@ public class ArbreBinaireDeRecherche {
 
 	}
 
-	// methode pour ecrire dans un arbre binaire
+	// methode pour ecrire un stagiaire dans un arbre binaire
 	public void ajouterDansArbre(Stagiaire stagiaire, RandomAccessFile raf) throws IOException {
 
 		if (raf.length() == 0) {
@@ -83,12 +82,12 @@ public class ArbreBinaireDeRecherche {
 
 		} else {
 			raf.seek(0);
-			racine = racine.lireStagiaire(raf);
+			racine = racine.lireNoeud(raf);
 			racine.ajouterNoeud(stagiaire, raf);
 		}
 	}
 
-	// affichage de l'arbre en ordre
+	// methode pour un affichage de l'arbre en ordre
 	public List<Stagiaire> arbreAffichageInfix(RandomAccessFile raf) {
 		List<Stagiaire> stagiaires = new ArrayList<>();
 		try {
@@ -97,18 +96,17 @@ public class ArbreBinaireDeRecherche {
 						+ "de");
 			} else {
 				raf.seek(0);
-				Noeud noeudCourant = racine.lireStagiaire(raf);
+				Noeud noeudCourant = racine.lireNoeud(raf);
 				noeudCourant.affichageInfixeNoeud(raf, stagiaires);
 
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// 
 			e.printStackTrace();
 		}
 		return stagiaires;
 	}
-	// recherche dans l arbre 
-	
+	// methode pour la recherche dans l arbre 
 	public List<Stagiaire> resultatRecherche(Stagiaire stagRecherche, RandomAccessFile raf) throws IOException {
 		List<Stagiaire> resultat = new ArrayList<>();
 		if (raf.length() == 0) {
@@ -116,10 +114,39 @@ public class ArbreBinaireDeRecherche {
 		
 	}else {
 		raf.seek(0);
-		racine = racine.lireStagiaire(raf);
+		racine = racine.lireNoeud(raf);
 		racine.rechercherStagiaire(stagRecherche, raf, resultat);
 	}
-	
 	return resultat;
-	}}
+	}
+	//methode pour supprimer un stagiaire de l'arbre
+	public void supprimerStagiaire(Stagiaire stagSuppression, RandomAccessFile raf) throws IOException {
+		if(raf.length() == 0 ) {
+			System.out.println("l'arbre est vide");
+		} else {
+			raf.seek(0);
+			racine = racine.lireNoeud(raf);
+			racine.rechercherStagiaireASupprime(stagSuppression, raf, 0);
+		}
+	}
+	
+	public Stagiaire modifierStagiaire(Stagiaire stagMAJ, RandomAccessFile raf) {
+		try {
+			if (raf.length() == 0) {
+				System.out.println("arbre vi/"
+						+ "de");
+			} else {
+				raf.seek(0);
+				Noeud noeudAModifie = racine.lireNoeud(raf);
+				noeudAModifie.modifierStagiaire(stagMAJ, raf);
+				
+			}} catch (IOException e) {
+				// 
+				e.printStackTrace();
+			}
+		return stagMAJ;
+}
+	
+}
+
 			

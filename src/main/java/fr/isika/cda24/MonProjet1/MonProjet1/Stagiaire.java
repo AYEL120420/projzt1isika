@@ -76,8 +76,36 @@ public class Stagiaire {
 		return "nom=" + nom + ", prenom=" + prenom + ", departement=" + departement + ", cycle=" + cycle
 				+ ", annee= " + annee ;
 	}
+	
+	
+	
 
 	// methodes specifiques
+		public int comparer(Stagiaire stagiaireRecherche) {
+			int resultat = this.nom.compareTo(stagiaireRecherche.getNom());
+			// Si les noms sont égaux, comparaison par prénom
+			if (resultat == 0) {
+				resultat = this.prenom.compareTo(stagiaireRecherche.getPrenom());
+			}
+
+			// Si les prénoms sont égaux, comparaison par département
+			if (resultat == 0) {
+				resultat = this.departement.compareTo(stagiaireRecherche.getDepartement());
+			}
+
+			// Si les départements sont égaux, comparaison par cycle
+			if (resultat == 0) {
+				resultat = this.cycle.compareTo(stagiaireRecherche.getCycle());
+			}
+
+			// Si les cycles sont égaux, comparaison par année
+			if (resultat == 0) {
+				resultat = this.annee.compareTo(stagiaireRecherche.getAnnee());
+			}
+
+			return resultat;
+		}
+		
 	public String getNomLong() {
 		String nomLong = this.nom;
 
